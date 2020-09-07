@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+    reverse_proxy:
+        build:
+            context: ./
+            dockerfile: docker/apache/Dockerfile
+        container_name: proxy
+        volumes:
+            - ./sites:/usr/local/apache2/conf/sites
+            - ./html:/usr/local/apache2/htdocs
+        ports:
+            - 80:80
+        networks:
+            - ${PROXY_NETWORK}
+
+    mysql:
+        image: mysql:5.7
+        container_name: dali_db
+        restart: on-failure
+        volumes:
+            - ./mysql-data:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+        networks:
+            - ${PROXY_NETWORK}
+
+#    adminer:
+#        image: adminer
+#        container_name: dali_admin
+#        depends_on:
+#            - mysql
+#        restart: on-failure
+#        ports:
+#            - 8080:8080
+#        networks:
+#            - ${PROXY_NETWORK}
+
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: dali_phpmyadmin
+        depends_on:
+            - mysql
+        environment:
+            - PMA_ARBITRARY=1
+            - UPLOAD_LIMIT=8M
+        restart: always
+        ports:
+            - 8080:80
+        networks:
+            - ${PROXY_NETWORK}
+
+    mailhog:
+        image: mailhog/mailhog:latest
+        restart: always
+        ports:
+            - 8025:8025
+        networks:
+            - ${PROXY_NETWORK}
+
+networks:
+    dalinet:
+        external:
+            name: ${PROXY_NETWORK}

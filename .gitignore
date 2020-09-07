@@ -1,0 +1,5 @@
+/.idea
+/mysql-data
+/sites/*
+!/sites/000-default.conf
+.env
