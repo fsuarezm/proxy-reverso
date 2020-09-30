@@ -12,7 +12,7 @@ services:
         ports:
             - 80:80
         networks:
-            - ${PROXY_NETWORK}
+            - dalinet
 
     mysql:
         image: mysql:5.7
@@ -23,7 +23,7 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
         networks:
-            - ${PROXY_NETWORK}
+            - dalinet
 
 #    adminer:
 #        image: adminer
@@ -48,7 +48,7 @@ services:
         ports:
             - 8080:80
         networks:
-            - ${PROXY_NETWORK}
+            - dalinet
 
     mailhog:
         image: mailhog/mailhog:latest
@@ -56,7 +56,7 @@ services:
         ports:
             - 8025:8025
         networks:
-            - ${PROXY_NETWORK}
+            - dalinet
 
 networks:
     dalinet:
